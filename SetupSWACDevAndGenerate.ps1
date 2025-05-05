@@ -49,6 +49,7 @@ $item = (Get-ChildItem "C:\python*" -ErrorAction SilentlyContinue | foreach-obje
 if($item -eq $null) {
   throw "dvc path not found"
 } else {
+
   set-alias -name "dvc" $item.FullName
 }
 
