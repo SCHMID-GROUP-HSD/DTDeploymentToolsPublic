@@ -4,6 +4,12 @@ $ProgressPreference = 'SilentlyContinue'
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
+function restartPwsh {
+& "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1'))
+" | out-string -stream
+  exit $lastexitcode
+}
+
 if ($null -eq (get-command pwsh -erroraction SilentlyContinue)) {
   $tmpPwshFile = "$env:TEMP\pwsh.msi"
   Invoke-WebRequest -Uri "https://github.com/PowerShell/PowerShell/releases/download/v7.4.1/PowerShell-7.4.1-win-x64.msi" -OutFile $tmpPwshFile
@@ -12,9 +18,7 @@ if ($null -eq (get-command pwsh -erroraction SilentlyContinue)) {
   Remove-item $tmpPwshFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 
-  # den rest mit pwsh ausführen
-  & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1'))" | out-string -stream
-  exit $lastexitcode
+  restartPwsh
 }
 
 if($null -eq (get-command git -erroraction SilentlyContinue)) {
@@ -36,10 +40,7 @@ if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
 if (-not(choco list --lo -r -e dvc)) {
   choco install dvc -y | out-string -stream
   if(0 -ne $lastexitcode) { throw "error. please see above" }
-
-  # restart pwsh to find dvc
-  & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1'))" | out-string -stream
-  exit $lastexitcode
+  restartPwsh
 }
 
 
