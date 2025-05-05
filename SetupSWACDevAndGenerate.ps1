@@ -4,19 +4,26 @@ $ProgressPreference = 'SilentlyContinue'
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
-if($null -eq (get-command git -erroraction SilentlyContinue)) {
-  $tmpExeFile =  "$env:TEMP\git-setup.exe"
-  Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe" -OutFile $tmpExeFile
-  Start-Process -FilePath $tmpExeFile -ArgumentList "/SILENT", "/NORESTART", "/DIR=C:\Program Files\Git" -Wait -NoNewWindow
-  Remove-item $tmpExeFile -erroraction SilentlyContinue
-}
-
 if ($null -eq (get-command pwsh -erroraction SilentlyContinue)) {
 $tmpPwshFile = "$env:TEMP\pwsh.msi"
   Invoke-WebRequest -Uri "https://github.com/PowerShell/PowerShell/releases/download/v7.4.1/PowerShell-7.4.1-win-x64.msi" -OutFile $tmpPwshFile
   Start-Process msiexec.exe -Wait -ArgumentList "/i `"$tmpPwshFile`" /qn /norestart"
   Remove-item $tmpPwshFile -erroraction SilentlyContinue
+  if(0 -ne $lastexitcode) { throw "error. please see above" }
+
+  # den rest mit pwsh ausführen
+  & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -file $PSCommandPath | out-string -stream
+  exit $lastexitcode
 }
+
+if($null -eq (get-command git -erroraction SilentlyContinue)) {
+  $tmpExeFile =  "$env:TEMP\git-setup.exe"
+  Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe" -OutFile $tmpExeFile
+  Start-Process -FilePath $tmpExeFile -ArgumentList "/SILENT", "/NORESTART", "/DIR=C:\Program Files\Git" -Wait -NoNewWindow
+  Remove-item $tmpExeFile -erroraction SilentlyContinue
+  if(0 -ne $lastexitcode) { throw "error. please see above" }
+}
+
 
 if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
   Set-ExecutionPolicy Bypass -Scope Process -Force
@@ -26,6 +33,11 @@ if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
 
 if ($null -eq (get-command dvc -erroraction SilentlyContinue)) {
   choco install dvc -y | out-string -stream
+  if(0 -ne $lastexitcode) { throw "error. please see above" }
+
+  # pwsh neustarten, damit dvc gefunden wird
+  & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -file $PSCommandPath | out-string -stream
+  exit $lastexitcode
 }
 
 
