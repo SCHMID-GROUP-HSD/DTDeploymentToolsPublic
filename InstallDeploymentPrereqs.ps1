@@ -30,7 +30,7 @@ if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
   iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
-if ($null -eq (get-command dvc -erroraction SilentlyContinue)) {
+if (-not(choco list --lo -r -e dvc)) {
   choco install dvc -y | out-string -stream
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 
