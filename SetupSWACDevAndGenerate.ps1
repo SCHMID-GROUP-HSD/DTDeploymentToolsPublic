@@ -1,6 +1,8 @@
 $ErrorActionPreference = "Stop"
+$ProgressPreference = 'SilentlyContinue'
 
 $ErrorActionPreference = "Stop"
+$ProgressPreference = 'SilentlyContinue'
 
 if($null -eq (get-command git -erroraction SilentlyContinue)) {
   $tmpExeFile =  "$env:TEMP\git-setup.exe"
