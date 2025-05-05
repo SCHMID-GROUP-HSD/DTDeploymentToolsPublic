@@ -45,7 +45,6 @@ if (-not(choco list --lo -r -e dvc)) {
 }
 
 
-function getDVCPath
 $item = Get-ChildItem "C:\python*" -ErrorAction SilentlyContinue | foreach-object { set-location $_; Get-ChildItem "Scripts\dvc.exe" -ErrorAction SilentlyContinue }
 if($item -eq $null) {
 throw "dvc path not found"
