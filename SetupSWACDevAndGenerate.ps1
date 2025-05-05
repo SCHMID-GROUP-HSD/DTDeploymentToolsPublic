@@ -13,7 +13,7 @@ if ($null -eq (get-command pwsh -erroraction SilentlyContinue)) {
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 
   # den rest mit pwsh ausführen
-  & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -file $PSCommandPath | out-string -stream
+  & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1'))" | out-string -stream
   exit $lastexitcode
 }
 
@@ -37,8 +37,8 @@ if ($null -eq (get-command dvc -erroraction SilentlyContinue)) {
   choco install dvc -y | out-string -stream
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 
-  # pwsh neustarten, damit dvc gefunden wird
-  & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -file $PSCommandPath | out-string -stream
+  # restart pwsh to find dvc
+  & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1'))" | out-string -stream
   exit $lastexitcode
 }
 
