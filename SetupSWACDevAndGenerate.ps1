@@ -1,6 +1,8 @@
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
+try {
+
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
@@ -67,4 +69,10 @@ if ((test-path variable:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) 
 
 & "./dvc-fetch-files.ps1"
 & "./generate.ps1"
+}
+catch {
+
+  $_
+  pause
+}
 
