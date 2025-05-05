@@ -40,11 +40,11 @@ if (-not(choco list --lo -r -e dvc)) {
 }
 
 
-$item = Get-ChildItem "C:\python*" -ErrorAction SilentlyContinue | foreach-object { set-location $_; Get-ChildItem "Scripts\dvc.exe" -ErrorAction SilentlyContinue }
+$item = (Get-ChildItem "C:\python*" -ErrorAction SilentlyContinue | foreach-object { set-location $_; Get-ChildItem "Scripts\dvc.exe" -ErrorAction SilentlyContinue })
 if($item -eq $null) {
-throw "dvc path not found"
+  throw "dvc path not found"
 } else {
-set-alias -name "dvc" $item.FullPath
+  set-alias -name "dvc" $item.FullPath
 }
 
 
