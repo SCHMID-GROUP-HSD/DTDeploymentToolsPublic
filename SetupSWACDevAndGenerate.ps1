@@ -1,5 +1,7 @@
 $ErrorActionPreference = "Stop"
 
+$ErrorActionPreference = "Stop"
+
 if($null -eq (get-command git -erroraction SilentlyContinue)) {
   $tmpExeFile =  "$env:TEMP\git-setup.exe"
   Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe" -OutFile $tmpExeFile
@@ -25,4 +27,25 @@ if ($null -eq (get-command dvc -erroraction SilentlyContinue)) {
 }
 
 
+
+$tmpDir = (New-TemporaryFile).FullName + ".d"
+mkdir $tmpDir
+cd $tmpDir
+
+git clone --recurse-submodules https://github.com/SCHMID-GROUP-HSD/SCHMIDwatchAdminCenter | Out-String -Stream
+if (0 -ne $lastexitcode) {
+    throw "error"
+}
+
+cd SCHMIDwatchAdminCenter
+
+if ((test-path variable:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) {
+    git checkout $env:DTSWACTagOrHash | Out-String -Stream
+    if (0 -ne $lastexitcode) {
+        throw "error"
+    }
+}
+
+& "./dvc-fetch-files.ps1"
+& "./generate.ps1"
 
