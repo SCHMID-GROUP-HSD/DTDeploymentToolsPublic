@@ -5,9 +5,10 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
 if ($null -eq (get-command pwsh -erroraction SilentlyContinue)) {
-$tmpPwshFile = "$env:TEMP\pwsh.msi"
+  $tmpPwshFile = "$env:TEMP\pwsh.msi"
   Invoke-WebRequest -Uri "https://github.com/PowerShell/PowerShell/releases/download/v7.4.1/PowerShell-7.4.1-win-x64.msi" -OutFile $tmpPwshFile
-  Start-Process msiexec.exe -Wait -ArgumentList "/i `"$tmpPwshFile`" /qn /norestart"
+  ###Start-Process msiexec.exe -Wait -ArgumentList "/i `"$tmpPwshFile`" /qn /norestart"
+  msiexec.exe /i $tmpPwshFile /qn /norestart | out-string -stream
   Remove-item $tmpPwshFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 
@@ -19,7 +20,8 @@ $tmpPwshFile = "$env:TEMP\pwsh.msi"
 if($null -eq (get-command git -erroraction SilentlyContinue)) {
   $tmpExeFile =  "$env:TEMP\git-setup.exe"
   Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe" -OutFile $tmpExeFile
-  Start-Process -FilePath $tmpExeFile -ArgumentList "/SILENT", "/NORESTART", "/DIR=C:\Program Files\Git" -Wait -NoNewWindow
+  ### Start-Process -FilePath $tmpExeFile -ArgumentList "/SILENT", "/NORESTART", "/DIR=C:\Program Files\Git" -Wait -NoNewWindow
+  & $tmpExeFile "/SILENT" "/NORESTART" "/DIR=C:\Program Files\Git" | out-string -stream
   Remove-item $tmpExeFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 }
