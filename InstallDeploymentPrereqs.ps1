@@ -37,9 +37,16 @@ if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
 if (-not(choco list --lo -r -e dvc)) {
   choco install dvc -y | out-string -stream
   if(0 -ne $lastexitcode) { throw "error. please see above" }
-  restartPwsh
 }
 
+
+function getDVCPath
+$item = Get-ChildItem "C:\python*" -ErrorAction SilentlyContinue | foreach-object { set-location $_; Get-ChildItem "Scripts\dvc.exe" -ErrorAction SilentlyContinue }
+if($item -eq $null) {
+throw "dvc path not found"
+} else {
+set-alias -name "dvc" $item.FullPath
+}
 
 
 
