@@ -66,6 +66,7 @@ if($item -eq $null) {
   }
 
   cd SCHMIDwatchAdminCenter
+  throw ("nooooo: " + $psscriptroot)
 
   if ((test-path env:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) {
       git checkout $env:DTSWACTagOrHash | Out-String -Stream
