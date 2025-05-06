@@ -77,7 +77,6 @@ if ((test-path env:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) {
 & "./generate.ps1"
 }
 catch {
-
   $_
   pause
 }
