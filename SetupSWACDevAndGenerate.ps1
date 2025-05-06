@@ -49,7 +49,6 @@ $item = (Get-ChildItem "C:\python*" -ErrorAction SilentlyContinue | foreach-obje
 if($item -eq $null) {
   throw "dvc path not found"
 } else {
-
   set-alias -name "dvc" $item.FullName
 }
 
@@ -66,6 +65,8 @@ if (0 -ne $lastexitcode) {
 }
 
 cd SCHMIDwatchAdminCenter
+
+$env:DTSWACTagOrHash="v0.0.1"
 
 if ((test-path variable:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) {
     git checkout $env:DTSWACTagOrHash | Out-String -Stream
