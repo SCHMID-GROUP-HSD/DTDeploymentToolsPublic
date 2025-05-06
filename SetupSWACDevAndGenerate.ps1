@@ -7,8 +7,7 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
 function restartPwsh {
-& "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1'))
-" | out-string -stream
+& "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1'))" | out-string -stream
   exit $lastexitcode
 }
 
@@ -25,8 +24,6 @@ if ($null -eq (get-command pwsh -erroraction SilentlyContinue)) {
   if(0 -ne $lastexitcode) { throw "error. please see above" }
   $pwshInstalled = $true
 }
-
-
 if($pwshInstalled) {
   restartPwsh
 }
@@ -59,10 +56,6 @@ if($item -eq $null) {
 } else {
   set-alias -name "dvc" $item.FullName
 }
-
-
-
-
 $tmpDir = (New-TemporaryFile).FullName + ".d"
 mkdir $tmpDir
 cd $tmpDir
@@ -88,4 +81,3 @@ catch {
   $_
   pause
 }
-
