@@ -66,9 +66,9 @@ if (0 -ne $lastexitcode) {
 
 cd SCHMIDwatchAdminCenter
 
-$env:DTSWACTagOrHash="v0.0.1"
+###$env:DTSWACTagOrHash="v0.0.1"
 
-if ((test-path variable:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) {
+if ((test-path env:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) {
     git checkout $env:DTSWACTagOrHash | Out-String -Stream
     if (0 -ne $lastexitcode) {
         throw "error"
