@@ -3,11 +3,11 @@ $ProgressPreference = 'SilentlyContinue'
 
 try {
 
-$ErrorActionPreference = "Stop"
+  $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
 function restartPwsh {
-& "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1'))" | out-string -stream
+& "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -command "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ("`$psscriptroot=`"$psscriptroot`";" +((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/SCHMID-GROUP-HSD/DTDeploymentToolsPublic/refs/heads/main/SetupSWACDevAndGenerate.ps1')))" | out-string -stream
   exit $lastexitcode
 }
 
@@ -56,26 +56,27 @@ if($item -eq $null) {
 } else {
   set-alias -name "dvc" $item.FullName
 }
-$tmpDir = (New-TemporaryFile).FullName + ".d"
-mkdir $tmpDir
-cd $tmpDir
+  $tmpDir = (New-TemporaryFile).FullName + ".d"
+  mkdir $tmpDir
+  cd $tmpDir
 
-git clone --recurse-submodules https://github.com/SCHMID-GROUP-HSD/SCHMIDwatchAdminCenter | Out-String -Stream
-if (0 -ne $lastexitcode) {
-    throw "error"
-}
+  git clone --recurse-submodules https://github.com/SCHMID-GROUP-HSD/SCHMIDwatchAdminCenter | Out-String -Stream
+  if (0 -ne $lastexitcode) {
+      throw "error"
+  }
 
-cd SCHMIDwatchAdminCenter
+  cd SCHMIDwatchAdminCenter
 
-if ((test-path env:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) {
-    git checkout $env:DTSWACTagOrHash | Out-String -Stream
-    if (0 -ne $lastexitcode) {
-        throw "error"
-    }
-}
+  if ((test-path env:DTSWACTagOrHash) -and ($null -ne $env:DTSWACTagOrHash)) {
+      git checkout $env:DTSWACTagOrHash | Out-String -Stream
+      if (0 -ne $lastexitcode) {
+          throw "error"
+      }
+  }
 
-& "./dvc-fetch-files.ps1"
-& "./generate.ps1"
+  & "./dvc-fetch-files.ps1"
+  & "./generate.ps1"
+
 }
 catch {
   $_
