@@ -81,5 +81,4 @@ if($item -eq $null) {
 }
 catch {
   $_
-  pause
 }
