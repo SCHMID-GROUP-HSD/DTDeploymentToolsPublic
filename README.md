@@ -5,7 +5,11 @@
 $env:DTSWACTagOrHash="v2.0.10" # could also be a hash like "72743d9"
 ```
 
+Don't delete the temp directory
 
+```
+$env:DTSWACKeepTempDirectory
+```
 
 Run following powershell snippet (as administrator): 
 

@@ -87,7 +87,6 @@ if($item -eq $null) {
 catch {
   $_
 } finally {
-
   if (-not((test-path env:DTSWACKeepTempDirectory) -and ($null -ne $env:DTSWACKeepTempDirectory))) {
     remove-item -recurse -erroraction SilentlyContinue $tmpDir
   }
