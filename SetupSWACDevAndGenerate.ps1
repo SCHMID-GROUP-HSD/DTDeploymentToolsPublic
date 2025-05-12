@@ -74,10 +74,10 @@ if($item -eq $null) {
       if (0 -ne $lastexitcode) {
           throw "error"
       }
-      #git submodule update --init --recursive | Out-String -Stream
-      #if (0 -ne $lastexitcode) {
-          #throw "error"
-      #}
+      git submodule update --init --recursive | Out-String -Stream
+      if (0 -ne $lastexitcode) {
+          throw "error"
+      }
   }
 
   & "./dvc-fetch-files.ps1"
@@ -88,9 +88,11 @@ catch {
   $_
 } finally {
   if ((test-path env:DTSWACKeepTempDirectory) -and ($null -ne $env:DTSWACKeepTempDirectory)) {
+
   } else {
     cd "C:/"
     #remove-item -recurse -erroraction SilentlyContinue $tmpDir
+    throw "tmpDir: $tmpDir"
     write-host $tmpDir
     remove-item -recurse $tmpDir
   }
