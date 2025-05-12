@@ -90,6 +90,7 @@ catch {
   if ((test-path env:DTSWACKeepTempDirectory) -and ($null -ne $env:DTSWACKeepTempDirectory)) {
   } else {
     cd "C:/"
-    remove-item -recurse -erroraction SilentlyContinue $tmpDir
+    #remove-item -recurse -erroraction SilentlyContinue $tmpDir
+    remove-item -recurse $tmpDir
   }
 }
