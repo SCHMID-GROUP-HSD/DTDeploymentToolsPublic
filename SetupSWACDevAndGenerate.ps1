@@ -74,10 +74,10 @@ if($item -eq $null) {
       if (0 -ne $lastexitcode) {
           throw "error"
       }
-      git submodule update --init --recursive | Out-String -Stream
-      if (0 -ne $lastexitcode) {
-          throw "error"
-      }
+      #git submodule update --init --recursive | Out-String -Stream
+      #if (0 -ne $lastexitcode) {
+          #throw "error"
+      #}
   }
 
   & "./dvc-fetch-files.ps1"
