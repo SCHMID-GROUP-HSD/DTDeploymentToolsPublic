@@ -1,6 +1,8 @@
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
+$tmpDir = (New-TemporaryFile).FullName + ".d"
+
 try {
 
   $ErrorActionPreference = "Stop"
@@ -56,7 +58,6 @@ if($item -eq $null) {
 } else {
   set-alias -name "dvc" $item.FullName
 }
-  $tmpDir = (New-TemporaryFile).FullName + ".d"
   mkdir $tmpDir
   cd $tmpDir
 
@@ -85,4 +86,9 @@ if($item -eq $null) {
 }
 catch {
   $_
+} finally {
+
+  if (-not((test-path env:DTSWACKeepTempDirectory) -and ($null -ne $env:DTSWACKeepTempDirectory))) {
+    remove-item -recurse -erroraction SilentlyContinue $tmpDir
+  }
 }
