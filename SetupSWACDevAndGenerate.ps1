@@ -85,7 +85,8 @@ if($item -eq $null) {
 
 }
 catch {
-  $_
+  write-host "error:"
+  write-error $_
 } finally {
   if ((test-path env:DTSWACKeepTempDirectory) -and ($null -ne $env:DTSWACKeepTempDirectory)) {
 
