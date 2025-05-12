@@ -93,6 +93,7 @@ catch {
   } else {
     cd "C:/"
     #remove-item -recurse -erroraction SilentlyContinue $tmpDir
+    ####
     write-host $tmpDir
     remove-item -force -recurse $tmpDir
   }
