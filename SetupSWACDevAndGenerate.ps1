@@ -2,6 +2,7 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
 $tmpDir = (New-TemporaryFile).FullName + ".d"
+$oldpwd = $pwd
 
 try {
 
@@ -88,12 +89,4 @@ catch {
   write-host "error:"
   write-error $_
 } finally {
-  if ((test-path env:DTSWACKeepTempDirectory) -and ($null -ne $env:DTSWACKeepTempDirectory)) {
-
-  } else {
-    cd "C:/"
-    write-host $tmpDir
-
-    ##remove-item -force -recurse $tmpDir
-  }
 }
