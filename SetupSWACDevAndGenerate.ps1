@@ -80,8 +80,8 @@ if($item -eq $null) {
       }
   }
 
-  & "./dvc-fetch-files.ps1"
-  & "./generate.ps1"
+  & "./dvc-fetch-files.ps1" | out-string -stream
+  & "./generate.ps1" | out-string -stream
 
 }
 catch {
@@ -92,7 +92,6 @@ catch {
 
   } else {
     cd "C:/"
-    #remove-item -recurse -erroraction SilentlyContinue $tmpDir
     write-host $tmpDir
     remove-item -force -recurse $tmpDir
   }
