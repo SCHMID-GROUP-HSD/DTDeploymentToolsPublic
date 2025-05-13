@@ -52,13 +52,17 @@ if (-not(choco list --lo -r -e dvc)) {
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 }
 
-
-$item = (Get-ChildItem "C:\python*" -ErrorAction SilentlyContinue | foreach-object { set-location $_; Get-ChildItem "Scripts\dvc.exe" -ErrorAction SilentlyContinue })
-if($item -eq $null) {
-  throw "dvc path not found"
-} else {
-  set-alias -name "dvc" $item.FullName
+if($null -eq (get-command gh -erroraction SilentlyContinue)) {
+  $tmpExeFile =  "$env:TEMP\gh-setup.exe"
+  Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/download/v2.72.0/gh_2.72.0_windows_amd64.msi" -OutFile $tmpExeFile
+  ### Start-Process -FilePath $tmpExeFile -ArgumentList "/SILENT", "/NORESTART", "/DIR=C:\Program Files\Git" -Wait -NoNewWindow
+  #& $tmpExeFile "/SILENT" "/NORESTART" "/DIR=C:\Program Files\Git" | out-string -stream
+  & $tmpExeFile "/SILENT" "/NORESTART" | out-string -stream
+  Remove-item $tmpExeFile -erroraction SilentlyContinue
+  if(0 -ne $lastexitcode) { throw "error. please see above" }
 }
+
+https://github.com/cli/cli/releases/download/v2.72.0/gh_2.72.0_windows_amd64.msi
   mkdir $tmpDir
   cd $tmpDir
 
