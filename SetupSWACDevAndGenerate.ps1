@@ -61,8 +61,6 @@ if($null -eq (get-command gh -erroraction SilentlyContinue)) {
   Remove-item $tmpExeFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 }
-
-https://github.com/cli/cli/releases/download/v2.72.0/gh_2.72.0_windows_amd64.msi
   mkdir $tmpDir
   cd $tmpDir
 
