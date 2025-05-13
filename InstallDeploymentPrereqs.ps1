@@ -44,7 +44,7 @@ if (-not(choco list --lo -r -e dvc)) {
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 }
 
-if($null -eq (get-command gh -erroraction SilentlyContinue)) {
+if(-not(test-path "C:\Program Files\GitHub CLI\gh.exe")) {
   $tmpExeFile =  "$env:TEMP\gh-setup.msi"
   Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/download/v2.72.0/gh_2.72.0_windows_amd64.msi" -OutFile $tmpExeFile
   & msiexec.exe /I $tmpExeFile "/quiet" "/norestart" | out-string -stream
@@ -53,7 +53,7 @@ if($null -eq (get-command gh -erroraction SilentlyContinue)) {
   restartPwsh
 }
 
-gh auth status | out-string
-if(1 -eq $lastexitcode) {
-  gh auth login --hostname GitHub.com --git-protocol SSH --skip-ssh-key --web
+& "C:\Program Files\GitHub CLI\gh.exe" auth status | out-string
+if(1 -eq $lastexitcode) { 
+  & "C:\Program Files\GitHub CLI\gh.exe" auth login --hostname GitHub.com --git-protocol SSH --skip-ssh-key --web
 }
