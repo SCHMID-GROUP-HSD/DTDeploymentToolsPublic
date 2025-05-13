@@ -88,11 +88,13 @@ if(1 -eq $lastexitcode) {
   }
 
   & "./dvc-fetch-files.ps1" | out-string -stream
-  & "./generate.ps1" | out-string -stream
+  & "./generate-swac-code.ps1" | out-string -stream
+  & "./generate-swac-exe.ps1" | out-string -stream
 
 }
 catch {
   write-host "error:"
   write-error $_
+  pause
 } finally {
 }
