@@ -45,11 +45,9 @@ if (-not(choco list --lo -r -e dvc)) {
 }
 
 if($null -eq (get-command gh -erroraction SilentlyContinue)) {
-  $tmpExeFile =  "$env:TEMP\gh-setup.exe"
+  $tmpExeFile =  "$env:TEMP\gh-setup.msi"
   Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/download/v2.72.0/gh_2.72.0_windows_amd64.msi" -OutFile $tmpExeFile
-  ### Start-Process -FilePath $tmpExeFile -ArgumentList "/SILENT", "/NORESTART", "/DIR=C:\Program Files\Git" -Wait -NoNewWindow
-  #& $tmpExeFile "/SILENT" "/NORESTART" "/DIR=C:\Program Files\Git" | out-string -stream
-  & $tmpExeFile "/SILENT" "/NORESTART" | out-string -stream
+  & msiexec.exe /I $tmpExeFile "/quiet" "/norestart" | out-string -stream
   Remove-item $tmpExeFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
 }
