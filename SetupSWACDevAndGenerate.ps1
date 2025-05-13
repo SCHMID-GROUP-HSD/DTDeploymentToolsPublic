@@ -60,6 +60,11 @@ if($null -eq (get-command gh -erroraction SilentlyContinue)) {
   if(0 -ne $lastexitcode) { throw "error. please see above" }
   restartPwsh
 }
+
+gh auth status | out-string
+if(1 -eq $lastexitcode) {
+  gh auth login --hostname GitHub.com --git-protocol SSH --skip-ssh-key --web
+}
   mkdir $tmpDir
   cd $tmpDir
 
