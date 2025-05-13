@@ -58,6 +58,7 @@ if($null -eq (get-command gh -erroraction SilentlyContinue)) {
   & msiexec.exe /I $tmpExeFile "/quiet" "/norestart" | out-string -stream
   Remove-item $tmpExeFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
+  restartPwsh
 }
   mkdir $tmpDir
   cd $tmpDir
