@@ -42,6 +42,7 @@ if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
 if (-not(choco list --lo -r -e dvc)) {
   choco install dvc -y | out-string -stream
   if(0 -ne $lastexitcode) { throw "error. please see above" }
+  restartPwsh
 }
 
 if(-not(test-path "C:\Program Files\GitHub CLI\gh.exe")) {
