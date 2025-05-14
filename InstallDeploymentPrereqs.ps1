@@ -30,6 +30,7 @@ if($null -eq (get-command git -erroraction SilentlyContinue)) {
   & $tmpExeFile "/SILENT" "/NORESTART" "/DIR=C:\Program Files\Git" | out-string -stream
   Remove-item $tmpExeFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
+  $env:Path = [Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine);
 }
 
 
@@ -42,7 +43,7 @@ if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
 if (-not(choco list --lo -r -e dvc)) {
   choco install dvc -y | out-string -stream
   if(0 -ne $lastexitcode) { throw "error. please see above" }
-  restartPwsh
+  $env:Path = [Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine);
 }
 
 if(-not(test-path "C:\Program Files\GitHub CLI\gh.exe")) {
@@ -51,7 +52,8 @@ if(-not(test-path "C:\Program Files\GitHub CLI\gh.exe")) {
   & msiexec.exe /I $tmpExeFile "/quiet" "/norestart" | out-string -stream
   Remove-item $tmpExeFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
-  restartPwsh
+  $env:Path = [Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine);
+
 }
 
 & "C:\Program Files\GitHub CLI\gh.exe" auth status | out-string
