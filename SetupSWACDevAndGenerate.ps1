@@ -1,12 +1,10 @@
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
+$env:DTSWACDevRoot = [Environment]::GetEnvironmentVariable('DTSWACDevRoot', [System.EnvironmentVariableTarget]::Machine);
 if((test-path env:DTSWACDevRoot) -and (-not([string]::isnullorempty($env:DTSWACDevRoot)))) {
   $tmpDir = $env:DTSWACDevRoot
   $p =  "$tmpDir/SCHMIDwatchAdminCenter"
-  if(test-path $p) {
-    remove-item -recurse -erroraction SilentlyContinue -force $p 
-  }
 } else {
   $tmpDir = (New-TemporaryFile).FullName + ".d"
   mkdir $tmpDir
@@ -40,7 +38,7 @@ if($pwshInstalled) {
 }
 
 if ($PSVersionTable.PSEdition -eq 'Core') { 
-  if($null -eq (get-command git -erroraction SilentlyContinue)) {
+  if(-not(test-path "C:\Program Files\Git\cmd\git.exe")) {
     $tmpExeFile =  "$env:TEMP\git-setup.exe"
     Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe" -OutFile $tmpExeFile
     ### Start-Process -FilePath $tmpExeFile -ArgumentList "/SILENT", "/NORESTART", "/DIR=C:\Program Files\Git" -Wait -NoNewWindow
@@ -105,6 +103,7 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
 
   & "./dvc-fetch-files.ps1" | out-string -stream
   & "./generate-swac-code.ps1" | out-string -stream
+  write-host "finished deployment of the dev environment to $tmpDir"
 
 } else { 
   write-host "note: code not run, because its not PS 7"

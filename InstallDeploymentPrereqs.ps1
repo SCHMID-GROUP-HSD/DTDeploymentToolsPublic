@@ -24,7 +24,7 @@ if($pwshInstalled) {
 }
 
 if ($PSVersionTable.PSEdition -eq 'Core') { 
-  if($null -eq (get-command git -erroraction SilentlyContinue)) {
+  if(-not(test-path "C:\Program Files\Git\cmd\git.exe")) {
     $tmpExeFile =  "$env:TEMP\git-setup.exe"
     Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.49.0.windows.1/Git-2.49.0-64-bit.exe" -OutFile $tmpExeFile
     ### Start-Process -FilePath $tmpExeFile -ArgumentList "/SILENT", "/NORESTART", "/DIR=C:\Program Files\Git" -Wait -NoNewWindow
