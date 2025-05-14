@@ -1,7 +1,17 @@
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
-$tmpDir = (New-TemporaryFile).FullName + ".d"
+if((test-path env:DTSWACDevRoot) -and (-not([string]::isnullorempty($env:DTSWACDevRoot)))) {
+  $tmpDir = $env:DTSWACDevRoot
+  $p =  "$tmpDir/SCHMIDwatchAdminCenter"
+  if(test-path $p) {
+    remove-item -recurse -erroraction SilentlyContinue -force $p 
+  }
+} else {
+  $tmpDir = (New-TemporaryFile).FullName + ".d"
+  mkdir $tmpDir
+}
+
 $oldpwd = $pwd
 
 $ErrorActionPreference = "Stop"
@@ -68,11 +78,10 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
     & "C:\Program Files\GitHub CLI\gh.exe" auth login --hostname GitHub.com --git-protocol SSH --skip-ssh-key --web
   }
 } else { 
-  throw "please run in PowerShell 7"
+  write-host "note: code not run, because its not PS 7"
 }
 if ($PSVersionTable.PSEdition -eq 'Core') {
 
-  mkdir $tmpDir
   cd $tmpDir
 
   git clone --recurse-submodules https://github.com/SCHMID-GROUP-HSD/SCHMIDwatchAdminCenter | Out-String -Stream
@@ -96,8 +105,7 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
 
   & "./dvc-fetch-files.ps1" | out-string -stream
   & "./generate-swac-code.ps1" | out-string -stream
-  & "./generate-swac-exe.ps1" | out-string -stream
 
 } else { 
-  throw "please run in PowerShell 7"
+  write-host "note: code not run, because its not PS 7"
 }

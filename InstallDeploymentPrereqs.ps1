@@ -62,5 +62,5 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
     & "C:\Program Files\GitHub CLI\gh.exe" auth login --hostname GitHub.com --git-protocol SSH --skip-ssh-key --web
   }
 } else { 
-  throw "please run in PowerShell 7"
+  write-host "note: code not run, because its not PS 7"
 }
