@@ -8,7 +8,7 @@ function restartPwsh {
 
 $pwshInstalled=$false
 
-if ($null -eq (get-command just -erroraction SilentlyContinue)) {
+if (-not(test-path "C:\program files\just\just.exe")) {
   $ErrorActionPreference = "Stop"
   $ProgressPreference = 'SilentlyContinue'
 $downloadUrl = "https://github.com/casey/just/releases/download/1.40.0/just-1.40.0-x86_64-pc-windows-msvc.zip"
