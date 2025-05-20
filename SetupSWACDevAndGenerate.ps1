@@ -22,6 +22,45 @@ function restartPwsh {
 
 $pwshInstalled=$false
 
+if ($null -eq (get-command just -erroraction SilentlyContinue)) {
+  $ErrorActionPreference = "Stop"
+  $ProgressPreference = 'SilentlyContinue'
+$downloadUrl = "https://github.com/casey/just/releases/download/1.40.0/just-1.40.0-x86_64-pc-windows-msvc.zip"
+$zipPath = "$env:TEMP\just.zip"
+$extractPath = "$env:TEMP\just_extracted"
+
+# Download the zip file
+Invoke-WebRequest -Uri $downloadUrl -OutFile $zipPath
+
+# Unzip
+Expand-Archive -Path $zipPath -DestinationPath $extractPath -Force
+Remove-item $zipPath -force
+
+# Find the just.exe
+$justExePath = Get-ChildItem -Path $extractPath -Filter "just.exe" -Recurse | Select-Object -First 1
+
+# Choose install path
+$installDir = "C:\Program Files\just"
+if (-not (Test-Path $installDir)) {
+    New-Item -Path $installDir -ItemType Directory | Out-Null
+}
+
+# Move just.exe to install location
+Move-Item -Path $justExePath.FullName -Destination "$installDir\just.exe" -Force
+
+# Add to PATH if not already in PATH
+if (-not ($env:Path -split ";" | Where-Object { $_ -eq $installDir })) {
+    [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$installDir", [EnvironmentVariableTarget]::Machine)
+    Write-Host "Added '$installDir' to PATH. You may need to restart your terminal or computer for changes to take effect."
+} else {
+    Write-Host "'$installDir' is already in PATH."
+}
+
+Remove-item $extractPath -force -recurse
+
+Write-Host "✅ just.exe installed to: $installDir"
+
+}
 if ($null -eq (get-command pwsh -erroraction SilentlyContinue)) {
   $ErrorActionPreference = "Stop"
   $ProgressPreference = 'SilentlyContinue'
@@ -32,8 +71,7 @@ if ($null -eq (get-command pwsh -erroraction SilentlyContinue)) {
   Remove-item $tmpPwshFile -erroraction SilentlyContinue
   if(0 -ne $lastexitcode) { throw "error. please see above" }
   $pwshInstalled = $true
-}
-if($pwshInstalled) {
+}if($pwshInstalled) {
   restartPwsh
 }
 
@@ -101,8 +139,8 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
       }
   }
 
-  & "./dvc-fetch-files.ps1" | out-string -stream
-  & "./generate-swac-code.ps1" | out-string -stream
+  & "C:\program files\just\just.exe" dvc get | out-string -stream
+  & "C:\program files\just\just.exe" generate code | out-string -stream
   write-host "finished deployment of the dev environment to $tmpDir"
 
 } else { 
