@@ -15,6 +15,18 @@ $oldpwd = $pwd
 $ErrorActionPreference = "Stop"
 $ProgressPreference = 'SilentlyContinue'
 
+  if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+  }
+
+  if (-not(choco list --lo -r -e dvc)) {
+    choco install dvc -y | out-string -stream
+    if(0 -ne $lastexitcode) { throw "error. please see above. chocolatey log: $(get-content 'C:\ProgramData\chocolatey\logs\chocolatey.log')" }
+    $env:Path = [Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine);
+  }
+
 function restartPwsh {
   & "C:\Program Files\PowerShell\7\pwsh.exe" -executionpolicy unrestricted -encodedcommand "UwBlAHQALQBFAHgAZQBjAHUAdABpAG8AbgBQAG8AbABpAGMAeQAgAEIAeQBwAGEAcwBzACAALQBTAGMAbwBwAGUAIABQAHIAbwBjAGUAcwBzACAALQBGAG8AcgBjAGUAOwAgAFsAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAZQByAHYAaQBjAGUAUABvAGkAbgB0AE0AYQBuAGEAZwBlAHIAXQA6ADoAUwBlAGMAdQByAGkAdAB5AFAAcgBvAHQAbwBjAG8AbAAgAD0AIABbAFMAeQBzAHQAZQBtAC4ATgBlAHQALgBTAGUAcgB2AGkAYwBlAFAAbwBpAG4AdABNAGEAbgBhAGcAZQByAF0AOgA6AFMAZQBjAHUAcgBpAHQAeQBQAHIAbwB0AG8AYwBvAGwAIAAtAGIAbwByACAAMwAwADcAMgA7ACAAaQBlAHgAIAAoACcAJABwAHMAcwBjAHIAaQBwAHQAcgBvAG8AdAA9ACIAJwArACQAcABzAHMAYwByAGkAcAB0AHIAbwBvAHQAKwAnACIAOwAnACsAKAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABTAHkAcwB0AGUAbQAuAE4AZQB0AC4AVwBlAGIAQwBsAGkAZQBuAHQAKQAuAEQAbwB3AG4AbABvAGEAZABTAHQAcgBpAG4AZwAoACcAaAB0AHQAcABzADoALwAvAHIAYQB3AC4AZwBpAHQAaAB1AGIAdQBzAGUAcgBjAG8AbgB0AGUAbgB0AC4AYwBvAG0ALwBTAEMASABNAEkARAAtAEcAUgBPAFUAUAAtAEgAUwBEAC8ARABUAEQAZQBwAGwAbwB5AG0AZQBuAHQAVABvAG8AbABzAFAAdQBiAGwAaQBjAC8AcgBlAGYAcwAvAGgAZQBhAGQAcwAvAG0AYQBpAG4ALwBTAGUAdAB1AHAAUwBXAEEAQwBEAGUAdgBBAG4AZABHAGUAbgBlAHIAYQB0AGUALgBwAHMAMQAnACkAKQApAA==" | out-string -stream
   #exit $lastexitcode
@@ -87,17 +99,6 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
   }
 
 
-  if ($null -eq (get-command choco -erroraction SilentlyContinue)) {
-    Set-ExecutionPolicy Bypass -Scope Process -Force
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-  }
-
-  if (-not(choco list --lo -r -e dvc)) {
-    choco install dvc -y | out-string -stream
-    if(0 -ne $lastexitcode) { throw "error. please see above. chocolatey log: $(get-content 'C:\ProgramData\chocolatey\logs\chocolatey.log')" }
-    $env:Path = [Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine);
-  }
 
   if(-not(test-path "C:\Program Files\GitHub CLI\gh.exe")) {
     $tmpExeFile =  "$env:TEMP\gh-setup.msi"
