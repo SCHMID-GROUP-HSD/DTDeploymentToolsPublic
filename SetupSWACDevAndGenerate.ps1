@@ -95,7 +95,7 @@ if ($PSVersionTable.PSEdition -eq 'Core') {
 
   if (-not(choco list --lo -r -e dvc)) {
     choco install dvc -y | out-string -stream
-    if(0 -ne $lastexitcode) { throw "error. please see above" }
+    if(0 -ne $lastexitcode) { throw "error. please see above. chocolatey log: $(get-content 'C:\ProgramData\chocolatey\logs\chocolatey.log')" }
     $env:Path = [Environment]::GetEnvironmentVariable('Path', [System.EnvironmentVariableTarget]::Machine);
   }
 
